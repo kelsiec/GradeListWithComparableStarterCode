@@ -1,15 +1,17 @@
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class GradesClient {
+class GradesClient {
     private static final int READ = 1;
     private static final int ADD = 2;
     private static final int REMOVE = 3;
     private static final int DROP = 4;
     private static final int DISPLAY = 5;
-    private static final int SORT = 6;
-    private static final int AVERAGE = 7;
-    private static final int EXIT = 8;
+    private static final int BREAKDOWN = 6;
+    private static final int SORT = 7;
+    private static final int AVERAGE = 8;
+    private static final int HIGHEST = 9;
+    private static final int EXIT = 10;
 
     private static Scanner keyboard = new Scanner(System.in);
     private Grades grades = new Grades();
@@ -40,11 +42,20 @@ public class GradesClient {
                 case DISPLAY:
                     client.displayGrades();
                     break;
+                case BREAKDOWN:
+                    client.printGradeBreakdown();
+                    break;
                 case SORT:
                     client.displaySorted();
                     break;
                 case AVERAGE:
                     client.calcAverage();
+                    break;
+                case HIGHEST:
+                    client.getHighestStudent();
+                    break;
+                case EXIT:
+                    System.out.println("Exiting...");
                     break;
                 default:
                     System.out.println("That choice is not valid " + choice);
@@ -62,9 +73,11 @@ public class GradesClient {
         System.out.println("3. Remove all grades");
         System.out.println("4. Drop lowest grade");
         System.out.println("5. Display grades");
-        System.out.println("6. Sort grades");
-        System.out.println("7. Calculate average");
-        System.out.println("8. Exit");
+        System.out.println("6: Print grade breakdown");
+        System.out.println("7. Sort grades");
+        System.out.println("8. Calculate average");
+        System.out.println("9. Find student with highest grade");
+        System.out.println("10. Exit");
 
         System.out.println("*************************************");
         System.out.println();
@@ -74,14 +87,9 @@ public class GradesClient {
     private void readGrades() throws FileNotFoundException {
         System.out.print("Enter a filename to read the grades from:");
         String fileName = keyboard.next();
-
         System.out.println(" Reading in grades from " + fileName);
         grades.readGrades(fileName);
 
-    }
-
-    private void calcAverage() {
-        System.out.printf("Average is %.2f", grades.calcAverage());
     }
 
     private void addGrade() {
@@ -123,8 +131,20 @@ public class GradesClient {
         System.out.println(grades);
     }
 
+    private void printGradeBreakdown() {
+        grades.printGradeBreakdown();
+    }
+
     private void displaySorted() {
         grades.printSortedGrades();
+    }
+
+    private void calcAverage() {
+        System.out.printf("Average is %.2f\n", grades.calcAverage());
+    }
+
+    private void getHighestStudent() {
+        System.out.println("The student with the highest grade is " + grades.getStudentWithHighestGrade() + ".");
     }
 
 }

@@ -3,68 +3,104 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Grades {
-    private List<Double> grades;
+    private List<Grade> grades;
 
     public Grades() {
         grades = new ArrayList<>();
     }
 
-    public List<Double> getGrades() {
+    public List<Grade> getGrades() {
         return grades;
     }
 
     public void readGrades(String fileName) throws FileNotFoundException {
         Scanner scan = new Scanner(new File(fileName));
         while (scan.hasNextLine()) {
-            grades.add(Double.parseDouble(scan.nextLine()));
+            String name = scan.next().trim();
+            double grade = scan.nextDouble();
+            grades.add(new Grade(name, grade));
         }
     }
 
     public double calcAverage() {
         double total = 0.0;
-        for (double grade : grades) {
-            total += grade;
+        for (Grade grade : grades) {
+            total += grade.getGrade();
         }
         return total / grades.size();
     }
 
     public double dropLowest() {
-        double minGrade = Double.MAX_VALUE;
-        for (double grade : grades) {
-            if (grade < minGrade) {
+        Grade minGrade = new Grade("", Double.MAX_VALUE);
+        for (Grade grade : grades) {
+            if (grade.getGrade() < minGrade.getGrade()) {
                 minGrade = grade;
             }
         }
         grades.remove(minGrade);
-        return minGrade;
+        return minGrade.getGrade();
     }
 
     public void addGrade(double grade) {
-        grades.add(grade);
+        grades.add(new Grade("", grade));
     }
 
-    public boolean removeAllGrades(double grade) {
-        return grades.removeAll(Collections.singleton(grade));
+    public boolean removeAllGrades(double gradeValue) {
+        boolean removed = false;
+
+        for (Grade grade : grades) {
+            if (grade.getGrade() == gradeValue){
+                grades.remove(grade);
+                removed = true;
+            }
+        }
+        return removed;
     }
 
     // Collections.sort sorts the input list as a side-effect, which I didn't prefer
     // So I created a copy and sorted that.
     // You could also just sort grades.
     public void printSortedGrades() {
-        List<Double> gradesCopy = new ArrayList<>(grades);
+        List<Grade> gradesCopy = new ArrayList<>(grades);
         Collections.sort(gradesCopy);
 
         System.out.println(gradesCopy);
     }
 
     public void printGradeBreakdown() {
-        // TODO print the number of students who got A, B, C, D, and F
-        // e.g. A: 7, B: 5, C: 2, D: 1, F: 1
+        int a = 0;
+        int b = 0;
+        int c = 0;
+        int d = 0;
+        int f = 0;
+        for (Grade grade: grades) {
+            if (grade.getGrade() >= 90) {
+                a++;
+            } else if (grade.getGrade() >= 80) {
+                b++;
+            } else if (grade.getGrade() >= 70) {
+                c++;
+            } else if (grade.getGrade() >= 60) {
+                d++;
+            } else {
+                f++;
+            }
+        }
+        System.out.println("A: " + a + ", B: " + b + ", C: " + c + "D: " + d + ", F: " + f);
     }
 
     public String getStudentWithHighestGrade() {
-        // TODO return the student who got the highest grade
-        return null;
+        double highestGrade = Double.MIN_VALUE;
+        String highestStudent = "";
+
+        for (Grade grade: grades) {
+            if (grade.getGrade() > highestGrade) {
+                highestGrade = grade.getGrade();
+                highestStudent = grade.getStudent();
+            }
+        }
+
+        return highestStudent;
     }
 
     // Simplest version of toString() for this method
